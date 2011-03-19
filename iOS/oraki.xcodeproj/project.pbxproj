@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		822389F21335540F0053DFE4 /* SearchPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 822389F01335540F0053DFE4 /* SearchPageViewController.m */; };
+		822389F31335540F0053DFE4 /* SearchPageViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 822389F11335540F0053DFE4 /* SearchPageViewController.xib */; };
 		822F24F813355242003F295E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 822F24F713355242003F295E /* UIKit.framework */; };
 		822F24FA13355242003F295E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 822F24F913355242003F295E /* Foundation.framework */; };
 		822F24FC13355242003F295E /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 822F24FB13355242003F295E /* CoreGraphics.framework */; };
@@ -33,6 +35,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		822389EF1335540F0053DFE4 /* SearchPageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; name = SearchPageViewController.h; path = Classes/SearchPageViewController.h; sourceTree = "<group>"; };
+		822389F01335540F0053DFE4 /* SearchPageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SearchPageViewController.m; path = Classes/SearchPageViewController.m; sourceTree = "<group>"; };
+		822389F11335540F0053DFE4 /* SearchPageViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = SearchPageViewController.xib; path = Classes/SearchPageViewController.xib; sourceTree = "<group>"; };
 		822F24F313355242003F295E /* oraki.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = oraki.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		822F24F713355242003F295E /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		822F24F913355242003F295E /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -76,6 +81,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		822389E9133553A90053DFE4 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				822389EF1335540F0053DFE4 /* SearchPageViewController.h */,
+				822389F01335540F0053DFE4 /* SearchPageViewController.m */,
+				822389F11335540F0053DFE4 /* SearchPageViewController.xib */,
+			);
+			name = Classes;
+			sourceTree = "<group>";
+		};
 		822F24E813355242003F295E = {
 			isa = PBXGroup;
 			children = (
@@ -108,6 +123,7 @@
 		822F24FD13355242003F295E /* oraki */ = {
 			isa = PBXGroup;
 			children = (
+				822389E9133553A90053DFE4 /* Classes */,
 				822F250613355242003F295E /* orakiAppDelegate.h */,
 				822F250713355242003F295E /* orakiAppDelegate.m */,
 				822F250913355242003F295E /* MainWindow.xib */,
@@ -216,6 +232,7 @@
 			files = (
 				822F250213355242003F295E /* InfoPlist.strings in Resources */,
 				822F250B13355242003F295E /* MainWindow.xib in Resources */,
+				822389F31335540F0053DFE4 /* SearchPageViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -253,6 +270,7 @@
 			files = (
 				822F250513355242003F295E /* main.m in Sources */,
 				822F250813355242003F295E /* orakiAppDelegate.m in Sources */,
+				822389F21335540F0053DFE4 /* SearchPageViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -425,6 +443,7 @@
 				822F252613355243003F295E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		822F252713355243003F295E /* Build configuration list for PBXNativeTarget "orakiTests" */ = {
 			isa = XCConfigurationList;
@@ -433,6 +452,7 @@
 				822F252913355243003F295E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
