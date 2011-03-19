@@ -10,7 +10,7 @@
 #import "FliteController.h"
 #import <AVFoundation/AVFoundation.h>
 
-@interface SearchPageViewController () <UISearchBarDelegate>
+@interface SearchPageViewController () <UISearchBarDelegate, FliteControllerDelegate>
 @end
 
 @implementation SearchPageViewController
@@ -51,14 +51,16 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     FliteController *flite = [[FliteController alloc] init];
-    NSData *textData = [flite convertTextToData:@"Hello Gilbert"];
-    NSError *error;
+    flite.delegate = self;
+    NSUInteger dataId = [flite convertTextToData:@"Hello..."];
+    NSLog(@"Finished");
+    /*NSError *error;
     AVAudioPlayer *player = [[AVAudioPlayer alloc] initWithData:textData error:&error];
     if (!player) {
         NSLog(@"Error %@", error);
     } else {
         [player play];
-    }
+    }*/
     
 }
 
@@ -77,4 +79,10 @@
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
+#pragma mark -
+#pragma mark FliteController Delegate
+
+- (void)finishedProcessingData:(NSData *)data dataId:(NSUInteger)dataId {
+    NSLog(@"Done");
+}
 @end

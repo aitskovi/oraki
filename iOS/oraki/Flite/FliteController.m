@@ -17,7 +17,17 @@ cst_voice *register_cmu_us_slt();
 cst_wave *sound;
 cst_voice *voice;
 
+NSUInteger textId;
+
+@interface FliteController ()
+
+- (void)finishedProcessingData:(NSData *)data withId:(NSUInteger)dataId;
+
+@end
+
 @implementation FliteController
+
+@synthesize delegate = _delegate;
 
 - (id)init {
     if ((self = [super init])) {
@@ -27,24 +37,30 @@ cst_voice *voice;
     return self;
 }
 
-- (NSData *)convertTextToData:(NSString *)text {
-    // TODO: Perform computation on block with delegate callback on completion
-    NSMutableString *filteredString = [NSMutableString string];
-    if ([text length] > 1) {
-        for (int i = 0; i < [text length]; i++) { 
-            unichar ch = [text characterAtIndex:i];
-            [filteredString appendFormat:@"%c", ch];
+- (NSUInteger)convertTextToData:(NSString *)text {
+    __block NSUInteger currentId = textId;
+    __block FliteController *_self = self;
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        FliteController *self = _self;
+        NSMutableString *filteredString = [NSMutableString string];
+        if ([text length] > 1) {
+            for (int i = 0; i < [text length]; i++) { 
+                unichar ch = [text characterAtIndex:i];
+                [filteredString appendFormat:@"%c", ch];
+            }
         }
-    }
-    sound = flite_text_to_wave([filteredString UTF8String], voice);
-    
-    NSString *tempPath = NSTemporaryDirectory();
-    tempPath = [tempPath stringByAppendingPathComponent:@"temp.wav"];
-    
-    char *path = (char *)[tempPath UTF8String];
-    cst_wave_save_riff(sound, path);
-    
-    return [NSData dataWithContentsOfMappedFile:tempPath];
+        sound = flite_text_to_wave([filteredString UTF8String], voice);
+        
+        NSString *tempPath = NSTemporaryDirectory();
+        tempPath = [tempPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%d.wav", currentId]];
+        
+        char *path = (char *)[tempPath UTF8String];
+        cst_wave_save_riff(sound, path);
+        
+        NSData *data = [NSData dataWithContentsOfMappedFile:tempPath];
+        [self finishedProcessingData:data withId:currentId];
+    });
+    return ++textId;
 }
 
 - (void)setPitch:(float)pitch variance:(float)variance speed:(float)speed {
@@ -71,6 +87,13 @@ cst_voice *voice;
             voice = register_cmu_us_slt();
             break;
     }
+}
+
+#pragma mark -
+#pragma mark Delegate Protocol
+
+- (void)finishedProcessingData:(NSData *)data withId:(NSUInteger)dataId {
+    [self.delegate finishedProcessingData:data dataId:dataId];
 }
 
 @end

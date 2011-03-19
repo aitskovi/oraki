@@ -16,12 +16,23 @@ typedef enum FliteVoiceType {
     FliteVoiceSLT
 } FliteVoiceType;
 
+@protocol FliteControllerDelegate;
+
 @interface FliteController : NSObject {
-    NSMutableArray *_queue;
+    id <FliteControllerDelegate> delegate;
 }
 
--(NSData *)convertTextToData:(NSString *)text;
--(void)setPitch:(float)pitch variance:(float)variance speed:(float)speed;
--(void)setVoice:(FliteVoiceType)type;
+@property (nonatomic, assign) id <FliteControllerDelegate> delegate;
+
+- (NSUInteger)convertTextToData:(NSString *)text;
+- (void)setPitch:(float)pitch variance:(float)variance speed:(float)speed;
+- (void)setVoice:(FliteVoiceType)type;
+
+@end
+
+@protocol FliteControllerDelegate <NSObject>
+
+@required
+- (void)finishedProcessingData:(NSData *)data dataId:(NSUInteger)dataId;
 
 @end
