@@ -7,14 +7,20 @@
 //
 
 #import "orakiAppDelegate.h"
+#import "SearchPageViewController.h"
 
 @implementation orakiAppDelegate
 
 
 @synthesize window=_window;
+@synthesize navigationController = _navigationController;
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
-{
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    
+    SearchPageViewController *homePage = [[SearchPageViewController alloc] initWithNibName:@"SearchPageViewController" bundle:[NSBundle mainBundle]];
+    _navigationController = [[UINavigationController alloc] initWithRootViewController:homePage];
+    [self.window addSubview:_navigationController.view];
+    [homePage release];
     // Override point for customization after application launch.
     [self.window makeKeyAndVisible];
     return YES;
@@ -59,8 +65,8 @@
      */
 }
 
-- (void)dealloc
-{
+- (void)dealloc {
+    [_navigationController release], _navigationController = nil;
     [_window release];
     [super dealloc];
 }
