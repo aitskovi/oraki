@@ -1,0 +1,3 @@
+/iOS/oraki/build/
+/iOS/*.xcodeproj/*
+!/iOS/*.xcodeproj/project.pbxproj
