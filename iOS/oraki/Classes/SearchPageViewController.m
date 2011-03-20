@@ -9,6 +9,9 @@
 #import "SearchPageViewController.h"
 #import "FliteController.h"
 #import "OrakiConstants.h"
+#import "JSON.h"
+#import "ArticleViewController.h"
+
 #import <AVFoundation/AVFoundation.h>
 
 @interface SearchPageViewController () <UISearchBarDelegate, UITableViewDelegate, UITableViewDataSource, FliteControllerDelegate>
@@ -52,6 +55,7 @@
 #pragma mark UISearchBar Delegate
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
+    [searchBar resignFirstResponder];
     NSString *searchText = searchBar.text;
     
     NSDictionary *parameters = [NSDictionary dictionaryWithObject:searchText forKey:@"query"];
@@ -90,7 +94,7 @@
     // e.g. self.myOutlet = nil;
 }
 
-- (void)viewDidAppear:(BOOL)animated {
+- (void)viewWillAppear:(BOOL)animated {
     self.navigationController.navigationBarHidden = YES;
 }
 
@@ -104,21 +108,32 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    UITableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"search"];
-    if (!cell) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"search"];
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"search"];
+    if (cell == nil) {
+        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"search"] autorelease];
+        cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
     }
-    cell.textLabel.text = [self.results objectAtIndex:indexPath.row];
     
-    return [cell autorelease];
+    if (!self.results) {
+        cell.textLabel.text = @"Loading ...";
+    } else {
+        cell.textLabel.text = [self.results objectAtIndex:indexPath.row];
+    }
+    return cell;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [self.results count];
+    NSUInteger resultSize = [self.results count];
+    if (resultSize == 0) {
+        return 1;
+    }
+    return resultSize;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSLog(@"Selected");
+    ArticleViewController *articleController = [[ArticleViewController alloc] initWithArticle:[self.results objectAtIndex:indexPath.row]];
+    [self.navigationController pushViewController:articleController animated:YES];
+    [articleController release];
 }
 
 #pragma mark -
@@ -134,6 +149,14 @@
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
     NSLog(@"Search Complete");
+    
+    NSString *jsonRespose = [[NSString alloc] initWithData:self.searchResultData encoding:NSUTF8StringEncoding];
+    
+    SBJsonParser *parser = [[SBJsonParser alloc] init];
+    self.results = [parser objectWithString:jsonRespose];
+    NSLog(@"Results are %@", self.results);
+    [self.tableView reloadData];
+    [jsonRespose release];
 }
 
 #pragma mark -
