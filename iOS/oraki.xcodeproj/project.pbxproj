@@ -22,6 +22,9 @@
 		8209778D13368F37008C44E5 /* ArticleViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8209778C13368F36008C44E5 /* ArticleViewCell.m */; };
 		820977911336951B008C44E5 /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 8209778F1336951B008C44E5 /* logo.png */; };
 		820977921336951B008C44E5 /* logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 820977901336951B008C44E5 /* logo@2x.png */; };
+		820977961336BDE3008C44E5 /* pane.png in Resources */ = {isa = PBXBuildFile; fileRef = 820977931336BDE2008C44E5 /* pane.png */; };
+		820977971336BDE3008C44E5 /* pause.png in Resources */ = {isa = PBXBuildFile; fileRef = 820977941336BDE3008C44E5 /* pause.png */; };
+		820977981336BDE3008C44E5 /* play.png in Resources */ = {isa = PBXBuildFile; fileRef = 820977951336BDE3008C44E5 /* play.png */; };
 		822389F21335540F0053DFE4 /* SearchPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 822389F01335540F0053DFE4 /* SearchPageViewController.m */; };
 		822389F31335540F0053DFE4 /* SearchPageViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 822389F11335540F0053DFE4 /* SearchPageViewController.xib */; };
 		82238AA313355D330053DFE4 /* au_none.c in Sources */ = {isa = PBXBuildFile; fileRef = 82238A1F13355D330053DFE4 /* au_none.c */; };
@@ -174,6 +177,9 @@
 		8209778C13368F36008C44E5 /* ArticleViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ArticleViewCell.m; path = Classes/ArticleViewCell.m; sourceTree = "<group>"; };
 		8209778F1336951B008C44E5 /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo.png; sourceTree = "<group>"; };
 		820977901336951B008C44E5 /* logo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "logo@2x.png"; sourceTree = "<group>"; };
+		820977931336BDE2008C44E5 /* pane.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pane.png; sourceTree = "<group>"; };
+		820977941336BDE3008C44E5 /* pause.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pause.png; sourceTree = "<group>"; };
+		820977951336BDE3008C44E5 /* play.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = play.png; sourceTree = "<group>"; };
 		822389EF1335540F0053DFE4 /* SearchPageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SearchPageViewController.h; path = Classes/SearchPageViewController.h; sourceTree = "<group>"; };
 		822389F01335540F0053DFE4 /* SearchPageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SearchPageViewController.m; path = Classes/SearchPageViewController.m; sourceTree = "<group>"; };
 		822389F11335540F0053DFE4 /* SearchPageViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = SearchPageViewController.xib; path = Classes/SearchPageViewController.xib; sourceTree = "<group>"; };
@@ -750,6 +756,9 @@
 		822F24FE13355242003F295E /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				820977931336BDE2008C44E5 /* pane.png */,
+				820977941336BDE3008C44E5 /* pause.png */,
+				820977951336BDE3008C44E5 /* play.png */,
 				8209778F1336951B008C44E5 /* logo.png */,
 				820977901336951B008C44E5 /* logo@2x.png */,
 				822F24FF13355242003F295E /* oraki-Info.plist */,
@@ -854,6 +863,9 @@
 				8209777C1335831F008C44E5 /* ArticleViewController.xib in Resources */,
 				820977911336951B008C44E5 /* logo.png in Resources */,
 				820977921336951B008C44E5 /* logo@2x.png in Resources */,
+				820977961336BDE3008C44E5 /* pane.png in Resources */,
+				820977971336BDE3008C44E5 /* pause.png in Resources */,
+				820977981336BDE3008C44E5 /* play.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

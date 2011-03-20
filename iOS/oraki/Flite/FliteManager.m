@@ -55,7 +55,7 @@ cst_voice *voice;
     [super dealloc];
 }
 
-- (void)convertTextToData:(NSString *)text completion:(void (^)(NSData *data))completion {
+- (void)convertTextToData:(NSString *)text completion:(void (^)(AVAsset *data))completion {
     [self addBlock: ^{
         NSMutableString *filteredString = [NSMutableString string];
         if ([text length] > 1) {
@@ -76,8 +76,10 @@ cst_voice *voice;
         char *path = (char *)[tempPath UTF8String];
         cst_wave_save_riff(sound, path);
         
-        NSData *data = [NSData dataWithContentsOfMappedFile:tempPath];
-        if (completion) completion(data);
+        
+        AVAsset *asset = [AVURLAsset URLAssetWithURL:[NSURL fileURLWithPath:tempPath] options:nil];
+        //NSData *data = [NSData dataWithContentsOfMappedFile:tempPath];
+        if (completion) completion(asset);
     }];
 }
 

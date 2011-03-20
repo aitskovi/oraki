@@ -13,6 +13,11 @@
 #import "ArticleViewCell.h"
 #import "OrakiConstants.h"
 #import "FliteManager.h"
+#import "AudioPlayerView.h"
+
+@interface ArticleViewController() <AudioPlayerViewDelegate>
+
+@end
 
 @implementation ArticleViewController
 
@@ -22,6 +27,7 @@
 @synthesize sections = _sections;
 @synthesize articleData = _articleData;
 @synthesize audioPlayer = _audioPlayer;
+@synthesize audioPlayerView = _audioPlayerView;
 
 - (id) initWithArticle:(NSString *)article {
     if ((self = [self initWithNibName:nil bundle:nil])) {
@@ -43,8 +49,9 @@
 
 - (void)dealloc {
     [[FliteManager sharedInstance] stopAllTasks];
-    [_audioPlayer stop];
+    [_audioPlayer pause];
     [_audioPlayer release], _audioPlayer = nil;
+    [_audioPlayerView release], _audioPlayerView = nil;
     [_articleTitle release], _articleTitle = nil;
     [_indicatorView release], _indicatorView = nil;
     [_sectionView release], _sectionView = nil;
@@ -69,6 +76,7 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
+    [self.audioPlayerView setDelegate:self];
     if (self.articleData) {
         [self.indicatorView startAnimating];
     }
@@ -108,13 +116,10 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     Section *currentSection = [self.sections objectAtIndex:indexPath.row];
-    AudioText *paragraph = [[currentSection paragraphs] objectAtIndex:0];
-    if ([paragraph hasLoaded]) {
-        [self.audioPlayer stop];
-        self.audioPlayer = [[AVAudioPlayer alloc] initWithData:[paragraph audioData] error:nil];
+    if ([currentSection hasLoaded]) {
+        self.audioPlayer = [AVQueuePlayer queuePlayerWithItems:[currentSection sectionItems]];
         [self.audioPlayer play];
-    } else {
-        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+        [self.audioPlayerView setPlaying:YES];
     }
 }
 
@@ -154,4 +159,17 @@
     self.articleData = nil;
 }
 
+#pragma mark -
+#pragma mark AudioPlayerViewDelegate
+
+- (void)playButtonWasPressed {
+    if (!self.audioPlayer) return;
+    if (self.audioPlayer.rate != 0) {
+        [self.audioPlayer pause];
+        [self.audioPlayerView setPlaying:NO];
+    } else {
+        [self.audioPlayer play];
+        [self.audioPlayerView setPlaying:YES];
+    }
+}
 @end

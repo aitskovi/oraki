@@ -7,14 +7,14 @@
 //
 
 #import <Foundation/Foundation.h>
-
+#import <AVFoundation/AVFoundation.h>
 
 @interface AudioText : NSObject {
     
 }
 
 @property (nonatomic, copy) NSString *text;
-@property (nonatomic, retain) NSData *audioData;
+@property (nonatomic, retain) AVAsset *audioAsset;
 
 - (id)initWithText:(NSString *)text;
 - (BOOL)hasLoaded;

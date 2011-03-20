@@ -11,41 +11,31 @@
 
 @implementation AudioPlayerView
 
+@synthesize delegate = _delegate;
 @synthesize playButton = _playButton;
 @synthesize previousButton = _previousButton;
 @synthesize nextButton = _nextButton;
 
-- (void)commonInit {
-    _playButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [_playButton setTitle:@"Play" forState:UIControlStateNormal];
-    [self.playButton sizeToFit];
-    [self addSubview:_playButton];
-}
-
-- (id)initWithFrame:(CGRect)frame {
-    self = [super initWithFrame:frame];
-    if (self) {
-        [self commonInit];
-    }
-    return self;
-}
-
-- (id)initWithCoder:(NSCoder *)aDecoder {
-    self = [super initWithCoder:aDecoder];
-    if (self) {
-        [self commonInit];
-    }
-    return self;
-}
-
-- (void)layoutSubviews {
-    [super layoutSubviews];
-    [self.playButton sizeToFit];
-    [self.playButton setCenter:self.center];
-}
-
 - (void)dealloc {
+    _delegate = nil;
+    [_playButton release], _playButton = nil;
+    [_previousButton release], _previousButton = nil;
+    [_nextButton release], _nextButton = nil;
     [super dealloc];
+}
+
+#pragma mark -
+
+- (void)setPlaying:(BOOL)playing {
+    if (playing) {
+        [self.playButton setImage:[UIImage imageNamed:@"pause.png"] forState:UIControlStateNormal];
+    } else {
+        [self.playButton setImage:[UIImage imageNamed:@"play.png"] forState:UIControlStateNormal];
+    }
+}
+
+- (IBAction)playButtonWasPressed:(UIButton *)button {
+    [self.delegate playButtonWasPressed];
 }
 
 @end

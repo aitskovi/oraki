@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 #import <AVFoundation/AVFoundation.h>
 
+@class AudioPlayerView;
+
 @interface ArticleViewController : UIViewController {
 
 }
@@ -18,8 +20,9 @@
 @property (nonatomic, copy) NSString *articleTitle;
 @property (nonatomic, retain) IBOutlet UITableView *sectionView;
 @property (nonatomic, retain) IBOutlet UIActivityIndicatorView *indicatorView;
+@property (nonatomic, retain) IBOutlet AudioPlayerView *audioPlayerView;
 @property (nonatomic, retain) NSArray *sections;
 @property (nonatomic, retain) NSMutableData *articleData;
-@property (nonatomic, retain) AVAudioPlayer *audioPlayer;
+@property (nonatomic, retain) AVQueuePlayer *audioPlayer;
 
 @end

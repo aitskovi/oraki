@@ -12,7 +12,7 @@
 @implementation AudioText
 
 @synthesize text = _text;
-@synthesize audioData = _audioData;
+@synthesize audioAsset = audioAsset;
 
 - (id)initWithText:(NSString *)text {
     if ((self = [self init])) {
@@ -20,9 +20,9 @@
         
         FliteManager *flite = [FliteManager sharedInstance];
         __block AudioText *_self = self;
-        [flite convertTextToData:text completion:^(NSData *data) {
+        [flite convertTextToData:text completion:^(AVAsset *data) {
             AudioText *self = _self;
-            self.audioData = data;
+            self.audioAsset = data;
             [self willChangeValueForKey:@"hasLoaded"];
             [self didChangeValueForKey:@"hasLoaded"];
         }];
@@ -31,7 +31,7 @@
 }
 
 - (BOOL)hasLoaded {
-    if (self.audioData) return YES;
+    if (self.audioAsset) return YES;
     return NO;
 }
 

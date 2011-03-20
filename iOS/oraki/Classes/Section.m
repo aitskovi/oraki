@@ -45,7 +45,9 @@ static void * kSectionContext = @"com.oraki.Section";
     if (![self hasLoaded]) return nil;
     __block NSMutableArray *sectionItems = [[NSMutableArray alloc] init];
     [self.paragraphs enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        [sectionItems addObject:[obj audioData]];
+        AVPlayerItem *item = [[AVPlayerItem alloc] initWithAsset:[obj audioAsset]];
+        [sectionItems addObject:item];
+        [item release];
     }];
     return sectionItems;
 }

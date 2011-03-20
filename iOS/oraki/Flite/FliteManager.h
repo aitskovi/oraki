@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <AVFoundation/AVFoundation.h>
 
 typedef enum FliteVoiceType {
     FliteVoiceKAL = 0,
@@ -21,7 +22,7 @@ typedef enum FliteVoiceType {
 }
 
 + (id)sharedInstance;
-- (void)convertTextToData:(NSString *)text completion:(void(^)(NSData *data))completion;
+- (void)convertTextToData:(NSString *)text completion:(void(^)(AVAsset *data))completion;
 - (void)setPitch:(float)pitch variance:(float)variance speed:(float)speed;
 - (void)setVoice:(FliteVoiceType)type;
 - (void)stopAllTasks;
