@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		820977571335663B008C44E5 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 820977561335663B008C44E5 /* AVFoundation.framework */; };
+		8209775B13357625008C44E5 /* OrakiConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 8209775A13357624008C44E5 /* OrakiConstants.m */; };
 		822389F21335540F0053DFE4 /* SearchPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 822389F01335540F0053DFE4 /* SearchPageViewController.m */; };
 		822389F31335540F0053DFE4 /* SearchPageViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 822389F11335540F0053DFE4 /* SearchPageViewController.xib */; };
 		82238AA313355D330053DFE4 /* au_none.c in Sources */ = {isa = PBXBuildFile; fileRef = 82238A1F13355D330053DFE4 /* au_none.c */; };
@@ -134,6 +135,8 @@
 
 /* Begin PBXFileReference section */
 		820977561335663B008C44E5 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		820977591335723F008C44E5 /* OrakiConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OrakiConstants.h; path = Classes/OrakiConstants.h; sourceTree = "<group>"; };
+		8209775A13357624008C44E5 /* OrakiConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OrakiConstants.m; path = Classes/OrakiConstants.m; sourceTree = "<group>"; };
 		822389EF1335540F0053DFE4 /* SearchPageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SearchPageViewController.h; path = Classes/SearchPageViewController.h; sourceTree = "<group>"; };
 		822389F01335540F0053DFE4 /* SearchPageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SearchPageViewController.m; path = Classes/SearchPageViewController.m; sourceTree = "<group>"; };
 		822389F11335540F0053DFE4 /* SearchPageViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = SearchPageViewController.xib; path = Classes/SearchPageViewController.xib; sourceTree = "<group>"; };
@@ -353,6 +356,8 @@
 				822389EF1335540F0053DFE4 /* SearchPageViewController.h */,
 				822389F01335540F0053DFE4 /* SearchPageViewController.m */,
 				822389F11335540F0053DFE4 /* SearchPageViewController.xib */,
+				820977591335723F008C44E5 /* OrakiConstants.h */,
+				8209775A13357624008C44E5 /* OrakiConstants.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -903,6 +908,7 @@
 				82238B0113355D330053DFE4 /* us_text.c in Sources */,
 				82238B0213355D330053DFE4 /* usenglish.c in Sources */,
 				82238B0613355D970053DFE4 /* FliteController.m in Sources */,
+				8209775B13357625008C44E5 /* OrakiConstants.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

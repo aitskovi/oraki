@@ -8,25 +8,36 @@
 
 #import "SearchPageViewController.h"
 #import "FliteController.h"
+#import "OrakiConstants.h"
 #import <AVFoundation/AVFoundation.h>
 
-@interface SearchPageViewController () <UISearchBarDelegate, FliteControllerDelegate>
+@interface SearchPageViewController () <UISearchBarDelegate, UITableViewDelegate, UITableViewDataSource, FliteControllerDelegate>
+
+@property (nonatomic, retain) NSArray *results;
+@property (nonatomic, retain) NSMutableData *searchResultData;
+
 @end
 
 @implementation SearchPageViewController
 
 @synthesize searchBar = _searchBar;
+@synthesize tableView = _tableView;
+@synthesize results = _results;
+@synthesize searchResultData = _searchResultsData;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // j initialization
-
+        _results = [[NSArray alloc] initWithObjects:@"Lebron", @"James", @"Avi", @"Gilbert", nil];
     }
     return self;
 }
 
 - (void)dealloc {
+    [_searchBar release], _searchBar = nil;
+    [_tableView release], _tableView = nil;
+    [_results release], _results = nil;
     [super dealloc];
 }
 
@@ -41,7 +52,16 @@
 #pragma mark UISearchBar Delegate
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
-    NSLog(@"Search");
+    NSString *searchText = searchBar.text;
+    
+    NSDictionary *parameters = [NSDictionary dictionaryWithObject:searchText forKey:@"query"];
+    NSURL *requestURL = [OrakiConstants urlForRequest:@"search" withParameters:parameters];
+    
+    NSURLRequest *request = [[NSURLRequest alloc] initWithURL:requestURL];
+    NSURLConnection *searchRequest = [NSURLConnection connectionWithRequest:request delegate:self];
+    [searchRequest start];
+    
+    self.searchResultData = [NSMutableData dataWithCapacity:0];
 }
 
 #pragma mark - 
@@ -77,6 +97,43 @@
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     // Return YES for supported orientations
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
+#pragma mark -
+#pragma mark UITableViewController
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    UITableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"search"];
+    if (!cell) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"search"];
+    }
+    cell.textLabel.text = [self.results objectAtIndex:indexPath.row];
+    
+    return [cell autorelease];
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return [self.results count];
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSLog(@"Selected");
+}
+
+#pragma mark -
+#pragma mark NSURLConnection Delegate
+
+- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
+    NSLog(@"It's Alive");
+}
+
+- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
+    [self.searchResultData appendData:data];
+}
+
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection {
+    NSLog(@"Search Complete");
 }
 
 #pragma mark -
