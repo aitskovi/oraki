@@ -7,7 +7,7 @@
 //
 
 #import "SearchPageViewController.h"
-#import "FliteController.h"
+#import "FliteManager.h"
 #import "OrakiConstants.h"
 #import "JSON.h"
 #import "ArticleViewController.h"
@@ -32,7 +32,7 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // j initialization
-        _results = [[NSArray alloc] initWithObjects:@"Lebron", @"James", @"Avi", @"Gilbert", nil];
+        _results = [[NSArray alloc] initWithObjects:@"Lebron James", @"James", @"Avi", @"Gilbert", nil];
     }
     return self;
 }
@@ -74,9 +74,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    FliteController *flite = [[FliteController alloc] init];
+    FliteManager *flite = [[FliteManager alloc] init];
     flite.delegate = self;
-    NSUInteger dataId = [flite convertTextToData:@"Hello..."];
+    //NSUInteger dataId = [flite convertTextToData:@"Hello..."];
     NSLog(@"Finished");
     /*NSError *error;
     AVAudioPlayer *player = [[AVAudioPlayer alloc] initWithData:textData error:&error];
@@ -114,8 +114,8 @@
         cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
     }
     
-    if (!self.results) {
-        cell.textLabel.text = @"Loading ...";
+    if (!self.results || [self.results count] == 0) {
+        cell.textLabel.text = @"No Results ...";
     } else {
         cell.textLabel.text = [self.results objectAtIndex:indexPath.row];
     }

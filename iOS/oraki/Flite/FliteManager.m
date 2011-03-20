@@ -6,7 +6,7 @@
 //  Copyright 2011 __MyCompanyName__. All rights reserved.
 //
 
-#import "FliteController.h"
+#import "FliteManager.h"
 #import "Flite.h"
 
 cst_voice *register_cmu_us_kal();
@@ -17,17 +17,24 @@ cst_voice *register_cmu_us_slt();
 cst_wave *sound;
 cst_voice *voice;
 
-NSUInteger textId;
-
-@interface FliteController ()
+@interface FliteManager ()
 
 - (void)finishedProcessingData:(NSData *)data withId:(NSUInteger)dataId;
 
 @end
 
-@implementation FliteController
+@implementation FliteManager
 
 @synthesize delegate = _delegate;
+
++ (id)sharedInstance {
+    static FliteManager *sharedInstance;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sharedInstance = [[FliteManager alloc] init];
+    });
+    return sharedInstance;
+}
 
 - (id)init {
     if ((self = [super init])) {
@@ -37,11 +44,8 @@ NSUInteger textId;
     return self;
 }
 
-- (NSUInteger)convertTextToData:(NSString *)text {
-    __block NSUInteger currentId = textId;
-    __block FliteController *_self = self;
+- (void)convertTextToData:(NSString *)text completion:(void (^)(NSData *data))completion {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        FliteController *self = _self;
         NSMutableString *filteredString = [NSMutableString string];
         if ([text length] > 1) {
             for (int i = 0; i < [text length]; i++) { 
@@ -51,16 +55,19 @@ NSUInteger textId;
         }
         sound = flite_text_to_wave([filteredString UTF8String], voice);
         
+        CFUUIDRef newUniqueId = CFUUIDCreate(kCFAllocatorDefault);
+        CFStringRef newUniqueIdString = CFUUIDCreateString(kCFAllocatorDefault, newUniqueId);
         NSString *tempPath = NSTemporaryDirectory();
-        tempPath = [tempPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%d.wav", currentId]];
+        tempPath = [tempPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%d.wav", newUniqueIdString]];
+        CFRelease(newUniqueId);
+        CFRelease(newUniqueIdString);
         
         char *path = (char *)[tempPath UTF8String];
         cst_wave_save_riff(sound, path);
         
         NSData *data = [NSData dataWithContentsOfMappedFile:tempPath];
-        [self finishedProcessingData:data withId:currentId];
+        if (completion) completion(data);
     });
-    return ++textId;
 }
 
 - (void)setPitch:(float)pitch variance:(float)variance speed:(float)speed {

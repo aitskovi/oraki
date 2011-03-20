@@ -15,6 +15,6 @@
 @property (nonatomic, retain) NSString *title;
 @property (nonatomic, retain) NSArray *paragraphs;
 
-//- (id)initWithDictionary:(NSDictionary *)dictionary;
+- (id)initWithDictionary:(NSDictionary *)dictionary;
 
 @end

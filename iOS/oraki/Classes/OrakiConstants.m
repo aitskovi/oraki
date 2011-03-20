@@ -22,10 +22,12 @@
     NSUInteger i = 0;
     
     for (id key in parameters) {
+        NSString *escapedKey = [key stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding];
+        NSString *escapedObject = [[parameters objectForKey:key] stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding];
         if ( i == 0) {
-            url = [url stringByAppendingFormat:@"%?%@=%@", key, [parameters objectForKey:key]];
+            url = [url stringByAppendingFormat:@"%?%@=%@", escapedKey, escapedObject];
         } else {
-            url = [url stringByAppendingFormat:@"%&%@=%@", key, [parameters objectForKey:key]];
+            url = [url stringByAppendingFormat:@"%&%@=%@", escapedKey, escapedObject];
         }
         i++;
     }

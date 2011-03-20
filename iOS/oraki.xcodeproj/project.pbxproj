@@ -17,6 +17,7 @@
 		8209777B1335831F008C44E5 /* ArticleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 820977791335831E008C44E5 /* ArticleViewController.m */; };
 		8209777C1335831F008C44E5 /* ArticleViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8209777A1335831E008C44E5 /* ArticleViewController.xib */; };
 		8209777F133589CC008C44E5 /* Section.m in Sources */ = {isa = PBXBuildFile; fileRef = 8209777E133589CA008C44E5 /* Section.m */; };
+		8209778313358BF0008C44E5 /* AudioText.m in Sources */ = {isa = PBXBuildFile; fileRef = 8209778213358BF0008C44E5 /* AudioText.m */; };
 		822389F21335540F0053DFE4 /* SearchPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 822389F01335540F0053DFE4 /* SearchPageViewController.m */; };
 		822389F31335540F0053DFE4 /* SearchPageViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 822389F11335540F0053DFE4 /* SearchPageViewController.xib */; };
 		82238AA313355D330053DFE4 /* au_none.c in Sources */ = {isa = PBXBuildFile; fileRef = 82238A1F13355D330053DFE4 /* au_none.c */; };
@@ -115,7 +116,7 @@
 		82238B0013355D330053DFE4 /* us_pos_cart.c in Sources */ = {isa = PBXBuildFile; fileRef = 82238A9C13355D330053DFE4 /* us_pos_cart.c */; };
 		82238B0113355D330053DFE4 /* us_text.c in Sources */ = {isa = PBXBuildFile; fileRef = 82238A9F13355D330053DFE4 /* us_text.c */; };
 		82238B0213355D330053DFE4 /* usenglish.c in Sources */ = {isa = PBXBuildFile; fileRef = 82238AA113355D330053DFE4 /* usenglish.c */; };
-		82238B0613355D970053DFE4 /* FliteController.m in Sources */ = {isa = PBXBuildFile; fileRef = 82238B0513355D970053DFE4 /* FliteController.m */; };
+		82238B0613355D970053DFE4 /* FliteManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 82238B0513355D970053DFE4 /* FliteManager.m */; };
 		822F24F813355242003F295E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 822F24F713355242003F295E /* UIKit.framework */; };
 		822F24FA13355242003F295E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 822F24F913355242003F295E /* Foundation.framework */; };
 		822F24FC13355242003F295E /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 822F24FB13355242003F295E /* CoreGraphics.framework */; };
@@ -161,6 +162,8 @@
 		8209777A1335831E008C44E5 /* ArticleViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = ArticleViewController.xib; path = Classes/ArticleViewController.xib; sourceTree = "<group>"; };
 		8209777D133589C8008C44E5 /* Section.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Section.h; path = Classes/Section.h; sourceTree = "<group>"; };
 		8209777E133589CA008C44E5 /* Section.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Section.m; path = Classes/Section.m; sourceTree = "<group>"; };
+		8209778113358BF0008C44E5 /* AudioText.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AudioText.h; path = Classes/AudioText.h; sourceTree = "<group>"; };
+		8209778213358BF0008C44E5 /* AudioText.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AudioText.m; path = Classes/AudioText.m; sourceTree = "<group>"; };
 		822389EF1335540F0053DFE4 /* SearchPageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SearchPageViewController.h; path = Classes/SearchPageViewController.h; sourceTree = "<group>"; };
 		822389F01335540F0053DFE4 /* SearchPageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SearchPageViewController.m; path = Classes/SearchPageViewController.m; sourceTree = "<group>"; };
 		822389F11335540F0053DFE4 /* SearchPageViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = SearchPageViewController.xib; path = Classes/SearchPageViewController.xib; sourceTree = "<group>"; };
@@ -327,8 +330,8 @@
 		82238AA013355D330053DFE4 /* us_text.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = us_text.h; sourceTree = "<group>"; };
 		82238AA113355D330053DFE4 /* usenglish.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = usenglish.c; sourceTree = "<group>"; };
 		82238AA213355D330053DFE4 /* usenglish.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = usenglish.h; sourceTree = "<group>"; };
-		82238B0413355D970053DFE4 /* FliteController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FliteController.h; path = Flite/FliteController.h; sourceTree = "<group>"; };
-		82238B0513355D970053DFE4 /* FliteController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FliteController.m; path = Flite/FliteController.m; sourceTree = "<group>"; };
+		82238B0413355D970053DFE4 /* FliteManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FliteManager.h; path = Flite/FliteManager.h; sourceTree = "<group>"; };
+		82238B0513355D970053DFE4 /* FliteManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FliteManager.m; path = Flite/FliteManager.m; sourceTree = "<group>"; };
 		822F24F313355242003F295E /* oraki.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = oraki.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		822F24F713355242003F295E /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		822F24F913355242003F295E /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -391,15 +394,25 @@
 			name = JSON;
 			sourceTree = "<group>";
 		};
+		8209778013358BC0008C44E5 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				8209777D133589C8008C44E5 /* Section.h */,
+				8209777E133589CA008C44E5 /* Section.m */,
+				8209778113358BF0008C44E5 /* AudioText.h */,
+				8209778213358BF0008C44E5 /* AudioText.m */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
 		822389E9133553A90053DFE4 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				8209778013358BC0008C44E5 /* Model */,
 				82238B0313355D790053DFE4 /* Flite */,
 				822389EF1335540F0053DFE4 /* SearchPageViewController.h */,
 				822389F01335540F0053DFE4 /* SearchPageViewController.m */,
 				820977781335831D008C44E5 /* ArticleViewController.h */,
-				8209777D133589C8008C44E5 /* Section.h */,
-				8209777E133589CA008C44E5 /* Section.m */,
 				820977791335831E008C44E5 /* ArticleViewController.m */,
 				8209777A1335831E008C44E5 /* ArticleViewController.xib */,
 				822389F11335540F0053DFE4 /* SearchPageViewController.xib */,
@@ -671,8 +684,8 @@
 		82238B0313355D790053DFE4 /* Flite */ = {
 			isa = PBXGroup;
 			children = (
-				82238B0413355D970053DFE4 /* FliteController.h */,
-				82238B0513355D970053DFE4 /* FliteController.m */,
+				82238B0413355D970053DFE4 /* FliteManager.h */,
+				82238B0513355D970053DFE4 /* FliteManager.m */,
 			);
 			name = Flite;
 			sourceTree = "<group>";
@@ -956,7 +969,7 @@
 				82238B0013355D330053DFE4 /* us_pos_cart.c in Sources */,
 				82238B0113355D330053DFE4 /* us_text.c in Sources */,
 				82238B0213355D330053DFE4 /* usenglish.c in Sources */,
-				82238B0613355D970053DFE4 /* FliteController.m in Sources */,
+				82238B0613355D970053DFE4 /* FliteManager.m in Sources */,
 				8209775B13357625008C44E5 /* OrakiConstants.m in Sources */,
 				8209776D13357E11008C44E5 /* NSObject+SBJSON.m in Sources */,
 				8209776E13357E11008C44E5 /* NSString+SBJSON.m in Sources */,
@@ -965,6 +978,7 @@
 				8209777113357E11008C44E5 /* SBJsonWriter.m in Sources */,
 				8209777B1335831F008C44E5 /* ArticleViewController.m in Sources */,
 				8209777F133589CC008C44E5 /* Section.m in Sources */,
+				8209778313358BF0008C44E5 /* AudioText.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -7,7 +7,9 @@
 //
 
 #import "ArticleViewController.h"
-
+#import "JSON.h"
+#import "Section.h"
+#import "OrakiConstants.h"
 
 @implementation ArticleViewController
 
@@ -20,6 +22,16 @@
     if ((self = [self initWithNibName:nil bundle:nil])) {
         _articleTitle = [article copy];
         self.title = _articleTitle;
+        
+        NSDictionary *parameters = [NSDictionary dictionaryWithObject:_articleTitle forKey:@"title"];
+        NSURL *requestURL = [OrakiConstants urlForRequest:@"article" withParameters:parameters];
+        
+        NSURLRequest *request = [[NSURLRequest alloc] initWithURL:requestURL];
+        NSURLConnection *searchRequest = [NSURLConnection connectionWithRequest:request delegate:self];
+        [searchRequest start];
+        //[request release];
+        
+        _articleData = [[NSMutableData alloc] initWithCapacity:0];
     }
     return self;
 }
@@ -76,7 +88,7 @@
     if (!self.sections) {
         cell.textLabel.text = @"Loading ...";
     } else {
-        cell.textLabel.text = [self.sections objectAtIndex:indexPath.row];
+        cell.textLabel.text = [[self.sections objectAtIndex:indexPath.row] title];
     }
     return cell;
 }
@@ -110,8 +122,17 @@
     NSString *jsonRespose = [[NSString alloc] initWithData:self.articleData encoding:NSUTF8StringEncoding];
     
     SBJsonParser *parser = [[SBJsonParser alloc] init];
-    self.results = [parser objectWithString:jsonRespose];
-    NSLog(@"Results are %@", self.results);
+    NSArray *sections = [parser objectWithString:jsonRespose];
+    NSLog(@"Results are %@", self.sections);
+    
+    __block NSMutableArray *sectionObjects = [NSMutableArray array];
+    [sections enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        Section *section = [[[Section alloc] initWithDictionary:obj] autorelease];
+        [sectionObjects addObject:section];
+    }];
+    
+    self.sections = sectionObjects;
+    
     [self.sectionView reloadData];
     [jsonRespose release];
 }
