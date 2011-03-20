@@ -36,4 +36,22 @@
     [super dealloc];
 }
 
+- (NSArray *)sectionItems {
+    if (![self hasLoaded]) return nil;
+    __block NSMutableArray *sectionItems = [[NSMutableArray alloc] init];
+    [self.paragraphs enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        [sectionItems addObject:[obj audioData]];
+    }];
+    return sectionItems;
+}
+
+- (BOOL)hasLoaded {
+    for (AudioText *paragraph in self.paragraphs) {
+        if (![paragraph hasLoaded]) {
+            return NO;
+        }
+    }
+    return YES;
+}
+
 @end

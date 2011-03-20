@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-
+#import <AVFoundation/AVFoundation.h>
 
 @interface Section : NSObject {
 }
@@ -16,5 +16,6 @@
 @property (nonatomic, retain) NSArray *paragraphs;
 
 - (id)initWithDictionary:(NSDictionary *)dictionary;
-
+- (NSArray *)sectionItems;
+- (BOOL)hasLoaded;
 @end

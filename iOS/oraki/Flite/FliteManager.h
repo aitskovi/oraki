@@ -16,8 +16,6 @@ typedef enum FliteVoiceType {
     FliteVoiceSLT
 } FliteVoiceType;
 
-@protocol FliteControllerDelegate;
-
 @interface FliteManager : NSObject {
     
 }

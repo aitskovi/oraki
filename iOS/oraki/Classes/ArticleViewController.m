@@ -39,6 +39,8 @@
 }
 
 - (void)dealloc {
+    [_audioPlayer stop];
+    [_audioPlayer release], _audioPlayer = nil;
     [_articleTitle release], _articleTitle = nil;
     [_sectionView release], _sectionView = nil;
     [super dealloc];
@@ -107,9 +109,9 @@
     Section *currentSection = [self.sections objectAtIndex:indexPath.row];
     AudioText *paragraph = [[currentSection paragraphs] objectAtIndex:0];
     if ([paragraph hasLoaded]) {
+        [self.audioPlayer stop];
         self.audioPlayer = [[AVAudioPlayer alloc] initWithData:[paragraph audioData] error:nil];
         [self.audioPlayer play];
-        NSLog(@"playng");
     } else {
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
     }
@@ -129,10 +131,10 @@
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
     NSLog(@"Search Complete");
     
-    NSString *jsonRespose = [[NSString alloc] initWithData:self.articleData encoding:NSUTF8StringEncoding];
+    NSString *jsonResponse = [[NSString alloc] initWithData:self.articleData encoding:NSUTF8StringEncoding];
     
     SBJsonParser *parser = [[SBJsonParser alloc] init];
-    NSArray *sections = [parser objectWithString:jsonRespose];
+    NSArray *sections = [parser objectWithString:jsonResponse];
     NSLog(@"Results are %@", self.sections);
     
     __block NSMutableArray *sectionObjects = [NSMutableArray array];
@@ -144,7 +146,7 @@
     self.sections = sectionObjects;
     
     [self.sectionView reloadData];
-    [jsonRespose release];
+    [jsonResponse release];
 }
 
 @end

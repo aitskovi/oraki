@@ -18,6 +18,7 @@
 
 @property (nonatomic, retain) NSArray *results;
 @property (nonatomic, retain) NSMutableData *searchResultData;
+@property (nonatomic, retain) UITapGestureRecognizer *tapRecognizer;
 
 @end
 
@@ -28,15 +29,15 @@
 @synthesize indicatorView = _indicatorView;
 @synthesize results = _results;
 @synthesize searchResultData = _searchResultsData;
+@synthesize tapRecognizer = _tapRecognizer;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // j initialization
         //_results = [[NSArray alloc] initWithObjects:@"Lebron James", @"James", @"Avi", @"Gilbert", nil];
-        UITapGestureRecognizer *tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self  action:@selector(tap)];
-        [self.view addGestureRecognizer:tapRecognizer];
-        [tapRecognizer release];
+        _tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self  action:@selector(tap)];
+        [self.view addGestureRecognizer:_tapRecognizer];
     }
     return self;
 }
@@ -60,6 +61,7 @@
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
     if ([searchText length] == 0) {
         self.tableView.hidden = YES;
+        self.tapRecognizer.enabled = YES;
     }
 }
 
@@ -84,6 +86,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.tableView.hidden = YES;
+    self.tapRecognizer.enabled = YES;
 }
 
 - (void)viewDidUnload {
@@ -125,7 +128,6 @@
     ArticleViewController *articleController = [[ArticleViewController alloc] initWithArticle:[self.results objectAtIndex:indexPath.row]];
     [self.navigationController pushViewController:articleController animated:YES];
     [articleController release];
-    self.tableView.userInteractionEnabled = NO;
 }
 
 #pragma mark -
@@ -149,6 +151,7 @@
     NSLog(@"Results are %@", self.results);
     [self.indicatorView stopAnimating];
     self.tableView.hidden = NO;
+    self.tapRecognizer.enabled = NO;
     [self.tableView reloadData];
     self.tableView.userInteractionEnabled = YES;
     [jsonRespose release];

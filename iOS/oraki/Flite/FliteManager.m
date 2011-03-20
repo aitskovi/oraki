@@ -8,6 +8,7 @@
 
 #import "FliteManager.h"
 #import "Flite.h"
+#import <AVFoundation/AVFoundation.h>
 
 cst_voice *register_cmu_us_kal();
 cst_voice *register_cmu_us_kal16();
@@ -21,7 +22,7 @@ cst_voice *voice;
 
 @property (retain) NSMutableArray *queue;
 
-- (void)nextBlock;
+- (void)nextBlock:(BOOL)transition;
 - (void)addBlock:(void(^)(void))block;
 - (void)clearBlocks;
 
@@ -44,6 +45,7 @@ cst_voice *voice;
     if ((self = [super init])) {
         flite_init();
         [self setVoice:FliteVoiceKAL];
+        _queue = [[NSMutableArray alloc] initWithCapacity:0];
     }
     return self;
 }
@@ -117,19 +119,19 @@ cst_voice *voice;
     [self.queue addObject:copiedBlock];
     
     if ([self.queue count] == 1) {
-        [self nextBlock];
+        [self nextBlock:NO];
     }
 }
 
-- (void)nextBlock {
-    [self.queue removeObjectAtIndex:0];
+- (void)nextBlock:(BOOL)transition {
+    if (transition) [self.queue removeObjectAtIndex:0];
     
     if ([self.queue count] > 0) {
         __block FliteManager *_self = self;
         void (^block)(void) = [self.queue objectAtIndex:0];
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             block();
-            [_self nextBlock];
+            [_self nextBlock:YES];
         });
     }
 }
