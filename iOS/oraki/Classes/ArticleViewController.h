@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import <AVFoundation/AVFoundation.h>
 
 @interface ArticleViewController : UIViewController {
 
@@ -19,5 +19,6 @@
 @property (nonatomic, retain) IBOutlet UITableView *sectionView;
 @property (nonatomic, retain) NSArray *sections;
 @property (nonatomic, retain) NSMutableData *articleData;
+@property (nonatomic, retain) AVAudioPlayer *audioPlayer;
 
 @end

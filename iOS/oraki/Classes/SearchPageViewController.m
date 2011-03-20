@@ -14,7 +14,7 @@
 
 #import <AVFoundation/AVFoundation.h>
 
-@interface SearchPageViewController () <UISearchBarDelegate, UITableViewDelegate, UITableViewDataSource, FliteControllerDelegate>
+@interface SearchPageViewController () <UISearchBarDelegate, UITableViewDelegate, UITableViewDataSource>
 
 @property (nonatomic, retain) NSArray *results;
 @property (nonatomic, retain) NSMutableData *searchResultData;
@@ -25,6 +25,7 @@
 
 @synthesize searchBar = _searchBar;
 @synthesize tableView = _tableView;
+@synthesize indicatorView = _indicatorView;
 @synthesize results = _results;
 @synthesize searchResultData = _searchResultsData;
 
@@ -32,7 +33,10 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // j initialization
-        _results = [[NSArray alloc] initWithObjects:@"Lebron James", @"James", @"Avi", @"Gilbert", nil];
+        //_results = [[NSArray alloc] initWithObjects:@"Lebron James", @"James", @"Avi", @"Gilbert", nil];
+        UITapGestureRecognizer *tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self  action:@selector(tap)];
+        [self.view addGestureRecognizer:tapRecognizer];
+        [tapRecognizer release];
     }
     return self;
 }
@@ -53,6 +57,11 @@
 
 #pragma mark -
 #pragma mark UISearchBar Delegate
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
+    if ([searchText length] == 0) {
+        self.tableView.hidden = YES;
+    }
+}
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
     [searchBar resignFirstResponder];
@@ -66,6 +75,7 @@
     [searchRequest start];
     
     self.searchResultData = [NSMutableData dataWithCapacity:0];
+    [self.indicatorView startAnimating];
 }
 
 #pragma mark - 
@@ -73,19 +83,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view from its nib.
-    FliteManager *flite = [[FliteManager alloc] init];
-    flite.delegate = self;
-    //NSUInteger dataId = [flite convertTextToData:@"Hello..."];
-    NSLog(@"Finished");
-    /*NSError *error;
-    AVAudioPlayer *player = [[AVAudioPlayer alloc] initWithData:textData error:&error];
-    if (!player) {
-        NSLog(@"Error %@", error);
-    } else {
-        [player play];
-    }*/
-    
+    self.tableView.hidden = YES;
 }
 
 - (void)viewDidUnload {
@@ -114,26 +112,20 @@
         cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
     }
     
-    if (!self.results || [self.results count] == 0) {
-        cell.textLabel.text = @"No Results ...";
-    } else {
-        cell.textLabel.text = [self.results objectAtIndex:indexPath.row];
-    }
+    cell.textLabel.text = [self.results objectAtIndex:indexPath.row];
+    
     return cell;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    NSUInteger resultSize = [self.results count];
-    if (resultSize == 0) {
-        return 1;
-    }
-    return resultSize;
+    return [self.results count];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     ArticleViewController *articleController = [[ArticleViewController alloc] initWithArticle:[self.results objectAtIndex:indexPath.row]];
     [self.navigationController pushViewController:articleController animated:YES];
     [articleController release];
+    self.tableView.userInteractionEnabled = NO;
 }
 
 #pragma mark -
@@ -155,14 +147,26 @@
     SBJsonParser *parser = [[SBJsonParser alloc] init];
     self.results = [parser objectWithString:jsonRespose];
     NSLog(@"Results are %@", self.results);
+    [self.indicatorView stopAnimating];
+    self.tableView.hidden = NO;
     [self.tableView reloadData];
+    self.tableView.userInteractionEnabled = YES;
     [jsonRespose release];
 }
 
-#pragma mark -
-#pragma mark FliteController Delegate
-
-- (void)finishedProcessingData:(NSData *)data dataId:(NSUInteger)dataId {
-    NSLog(@"Done");
+- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
+    self.tableView.userInteractionEnabled = YES;
+    [self.indicatorView stopAnimating];
+    
+    UIAlertView *alert = [[[UIAlertView alloc] initWithTitle:@"Oh Noes!" message:@"Something went wrong while we were talking to Wikipedia. Try again and we'll try to be nicer to it." delegate:nil cancelButtonTitle:@"Okay" otherButtonTitles:nil] autorelease];
+    [alert show];
 }
+
+#pragma mark -
+#pragma mark Touch Handling
+
+- (void)tap {
+    [self.searchBar resignFirstResponder];
+}
+
 @end

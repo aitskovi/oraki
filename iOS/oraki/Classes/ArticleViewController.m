@@ -9,6 +9,7 @@
 #import "ArticleViewController.h"
 #import "JSON.h"
 #import "Section.h"
+#import "AudioText.h"
 #import "OrakiConstants.h"
 
 @implementation ArticleViewController
@@ -17,6 +18,7 @@
 @synthesize sectionView = _sectionView;
 @synthesize sections = _sections;
 @synthesize articleData = _articleData;
+@synthesize audioPlayer = _audioPlayer;
 
 - (id) initWithArticle:(NSString *)article {
     if ((self = [self initWithNibName:nil bundle:nil])) {
@@ -102,7 +104,15 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSLog(@"Selected");
+    Section *currentSection = [self.sections objectAtIndex:indexPath.row];
+    AudioText *paragraph = [[currentSection paragraphs] objectAtIndex:0];
+    if ([paragraph hasLoaded]) {
+        self.audioPlayer = [[AVAudioPlayer alloc] initWithData:[paragraph audioData] error:nil];
+        [self.audioPlayer play];
+        NSLog(@"playng");
+    } else {
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    }
 }
 
 #pragma mark -

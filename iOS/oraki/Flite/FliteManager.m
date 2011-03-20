@@ -19,13 +19,17 @@ cst_voice *voice;
 
 @interface FliteManager ()
 
-- (void)finishedProcessingData:(NSData *)data withId:(NSUInteger)dataId;
+@property (retain) NSMutableArray *queue;
+
+- (void)nextBlock;
+- (void)addBlock:(void(^)(void))block;
+- (void)clearBlocks;
 
 @end
 
 @implementation FliteManager
 
-@synthesize delegate = _delegate;
+@synthesize queue = _queue;
 
 + (id)sharedInstance {
     static FliteManager *sharedInstance;
@@ -44,8 +48,13 @@ cst_voice *voice;
     return self;
 }
 
+- (void)dealloc {
+    [_queue release], _queue = nil;
+    [super dealloc];
+}
+
 - (void)convertTextToData:(NSString *)text completion:(void (^)(NSData *data))completion {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    [self addBlock: ^{
         NSMutableString *filteredString = [NSMutableString string];
         if ([text length] > 1) {
             for (int i = 0; i < [text length]; i++) { 
@@ -67,7 +76,7 @@ cst_voice *voice;
         
         NSData *data = [NSData dataWithContentsOfMappedFile:tempPath];
         if (completion) completion(data);
-    });
+    }];
 }
 
 - (void)setPitch:(float)pitch variance:(float)variance speed:(float)speed {
@@ -96,11 +105,37 @@ cst_voice *voice;
     }
 }
 
-#pragma mark -
-#pragma mark Delegate Protocol
+- (void)stopAllTasks {
+    [self clearBlocks];
+}
 
-- (void)finishedProcessingData:(NSData *)data withId:(NSUInteger)dataId {
-    [self.delegate finishedProcessingData:data dataId:dataId];
+#pragma mark -
+#pragma mark Queue Management
+
+- (void)addBlock:(void(^)(void))block {
+    void (^copiedBlock)(void) = [[block copy] autorelease];
+    [self.queue addObject:copiedBlock];
+    
+    if ([self.queue count] == 1) {
+        [self nextBlock];
+    }
+}
+
+- (void)nextBlock {
+    [self.queue removeObjectAtIndex:0];
+    
+    if ([self.queue count] > 0) {
+        __block FliteManager *_self = self;
+        void (^block)(void) = [self.queue objectAtIndex:0];
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            block();
+            [_self nextBlock];
+        });
+    }
+}
+
+- (void)clearBlocks {
+    [self.queue removeAllObjects];
 }
 
 @end
