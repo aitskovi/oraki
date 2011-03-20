@@ -21,7 +21,7 @@ import itertools
 from copy import deepcopy
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import util
-from google.appengine.api import urlfetch
+from google.appengine.api import urlfetch, memcache
 from django.utils import simplejson as json
 
 import BeautifulSoup as BS
@@ -34,28 +34,52 @@ def get_json(url, data):
 
 class SearchHandler(webapp.RequestHandler):
     """given search query, return suggestions"""
+
+    MC_TTL = 60*60*24  # 1 day
+
+    def mc_key(self, query):
+        return '%s:%s' % (self.__class__.__name__, query)
+
     def get(self):
         query = self.request.get('query', None)
         if query is None:
             self.error(400)
             return
-        limit = self.request.get('limit', 10)
-
-        result = get_json(WIKI_URL,
-          {'action': 'opensearch',
-           'search': query,
-           'limit': limit,
-           'namespace': 0,
-           'format': 'json'
-          })
-        if result.status_code != 200:
-            self.error(503)
+        limit_str = self.request.get('limit', '10')
+        try:
+            limit = int(limit_str)
+        except:
+            self.error(400)
             return
-        json_obj = json.loads(result.content)
-        suggestions = json_obj[1]
-        self.response.out.write(json.dumps(suggestions))
+
+        search_results = memcache.get(self.mc_key(query))
+        if search_results is None:
+            try:
+                result = get_json(WIKI_URL,
+                  {'action': 'opensearch',
+                   'search': query.encode('utf-8'),
+                   'limit': 99,  # doesn't seem to go that high... max 15?
+                   'namespace': 0,
+                   'format': 'json'
+                  })
+            except urlfetch.DownloadError:
+                logging.info('Timed out downloading.')
+                self.error(503)
+                return
+            if result.status_code != 200:
+                self.error(503)
+                return
+            result_obj = json.loads(result.content)
+            search_results = result_obj[1]
+            memcache.set(self.mc_key(query), search_results, time=self.MC_TTL)
+        self.response.out.write(json.dumps(search_results[:limit]))
 
 class ArticleHandler(webapp.RequestHandler):
+
+    MC_TTL = 60*60*24*7  # 1 week
+
+    def mc_key(self, title):
+        return '%s:%s' % (self.__class__.__name__, title)
 
     def get(self):
         """given title, return ... sth"""
@@ -63,42 +87,53 @@ class ArticleHandler(webapp.RequestHandler):
         if title is None:
             self.error(400)
             return
+        cached_val = memcache.get(self.mc_key(title))
+        if cached_val is not None:
+            self.response.out.write(cached_val)
+        else:
+            # first, get the page id
+            page_info_result = get_json(WIKI_URL,
+                {'action': 'query',
+                 'format': 'json',
+                 'titles': title.encode('utf-8'),
+                 'redirects': ''})
+            if page_info_result.status_code != 200:
+                logging.warning('Wikipedia servers down?')
+                self.error(503)
+                return
+            json_obj = json.loads(page_info_result.content)
+            pages = json_obj['query']['pages']
+            (page_id, page_info) = pages.iteritems().next()
+            if page_id == u'-1':
+                logging.warning('Couldn\'t find title %s', title)
+                self.error(404)
+                return
 
-        # first, get the page id
-        page_info_result = get_json(WIKI_URL,
-            {'action': 'query',
-             'format': 'json',
-             'titles': title,
-             'redirects': ''})
-        if page_info_result.status_code != 200:
-            logging.warning('Wikipedia servers down?')
-            self.error(503)
-            return
-        json_obj = json.loads(page_info_result.content)
-        pages = json_obj['query']['pages']
-        (page_id, page_info) = pages.iteritems().next()
-        if page_id == u'-1':
-            logging.warning('Couldn\'t find title %s', title)
-            self.error(404)
-            return
+            # then, get the parsed wiki page
+            try:
+                parsed_page_result = get_json(WIKI_URL,
+                    {'action': 'parse',
+                     'format': 'json',
+                     'prop': 'text|sections',
+                     'pageid': page_id})
+            except DownloadError:
+                logging.info('Timed out downloading.')
+                self.error(503)
+                return
+            if parsed_page_result.status_code != 200:
+                logging.warning('Wikipedia servers down?')
+                self.error(503)
+                return
+            page_data = json.loads(parsed_page_result.content)
+            sections_info = [section for section in page_data['parse']['sections'] \
+                if section['toclevel'] == 1]
+            text = page_data['parse']['text']['*']
 
-        # then, get the parsed wiki page
-        parsed_page_result = get_json(WIKI_URL,
-            {'action': 'parse',
-             'format': 'json',
-             'prop': 'text|sections',
-             'pageid': page_id})
-        if parsed_page_result.status_code != 200:
-            logging.warning('Wikipedia servers down?')
-            self.error(503)
-            return
-        page_data = json.loads(parsed_page_result.content)
-        sections_info = [section for section in page_data['parse']['sections'] \
-            if section['toclevel'] == 1]
-        text = page_data['parse']['text']['*']
-        self.response.out.write(json.dumps(
-            [section for section in self.parse_text(text, sections_info) \
-                 if len(section['paragraphs']) > 0]))
+            ret_val = json.dumps(
+                [section for section in self.parse_text(text, sections_info) \
+                     if len(section['paragraphs']) > 0])
+            memcache.set(self.mc_key(title), ret_val, time=self.MC_TTL)
+            self.response.out.write(ret_val)
 
     def parse_text(self, text, section_info):
         """
@@ -114,6 +149,10 @@ class ArticleHandler(webapp.RequestHandler):
                 continue
             elif iter_elmn.name == 'p':
                 # get all the text in the paragraph
+                # exorcise all the citations
+                citations = iter_elmn.findAll('sup')
+                [citation.extract() for citation in citations]
+                # find all the text and join them for a paragraph
                 curr_section['paragraphs'].append(''.join(iter_elmn.findAll(text=True)))
             elif re.match(r'^h[1-5]$', iter_elmn.name):
                 # it's a potential sectino; check if it's in the section_info

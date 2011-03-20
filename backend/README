@@ -1,0 +1,7 @@
+Flushing Memcache
+---------------------
+
+remote_api_shell.py [-s <doamin>:<port>] oraki-backend
+
+> memcache.flush_all()
+True
