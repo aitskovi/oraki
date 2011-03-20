@@ -68,9 +68,13 @@ static void * kArticleViewContext = @"com.oraki.ArticleView";
     if (context == kArticleViewContext) {
         if ([keyPath isEqualToString:@"hasLoaded"]) {
             if ([self.section hasLoaded]) {
-                [self.indicatorView stopAnimating];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self.indicatorView stopAnimating];
+                });
             } else {
-                [self.indicatorView startAnimating];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self.indicatorView startAnimating];
+                });
             }
         }
     } else {
