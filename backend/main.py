@@ -14,18 +14,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+import re
 import urllib
 import logging
+import itertools
+from copy import deepcopy
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import util
 from google.appengine.api import urlfetch
 from django.utils import simplejson as json
 
+import BeautifulSoup as BS
+
 WIKI_URL = 'http://en.wikipedia.org/w/api.php'
 
 def get_json(url, data):
     data_str = urllib.urlencode(data)
-    return urlfetch.fetch(url+'?'+data_str)
+    return urlfetch.fetch(url+'?'+data_str, deadline=10)
 
 class SearchHandler(webapp.RequestHandler):
     """given search query, return suggestions"""
@@ -48,10 +53,25 @@ class SearchHandler(webapp.RequestHandler):
         self.response.out.write(json.dumps(suggestions))
 
 class ContentHandler(webapp.RequestHandler):
-    def parse_section(self, section_json):
-        anchor = section_json['anchor']
-        name = section_json['line']
-        return {'name': name}
+    def parse_text(self, text, section_info):
+        """return section objects"""
+        soup = BS.BeautifulSoup(text)
+        sections = []
+        curr_section = {'name': 'Abstract', 'paragraphs': []}
+        for iter_elmn in soup.contents:
+            if isinstance(iter_elmn, BS.NavigableString):
+                continue
+            elif iter_elmn.name == 'p':
+                curr_section['paragraphs'].append(''.join(iter_elmn.findAll(text=True)))
+            elif re.match(r'^h[1-5]$', iter_elmn.name):
+                headline_elmn = iter_elmn.find('span', {'class': 'mw-headline'})
+                if any((headline_elmn.get('id', '') == section['anchor'] for section in section_info)):
+                    sections.append(deepcopy(curr_section))
+                    curr_section['name'] = ''.join(headline_elmn.findAll(text=True))
+                    curr_section['paragraphs'] = []
+                else:
+                    continue
+        return sections
 
 
     def get(self):
@@ -76,12 +96,13 @@ class ContentHandler(webapp.RequestHandler):
         if parsed_page_result.status_code != 200:
             self.error(503)
         json_obj = json.loads(parsed_page_result.content)
-        sections_json = json_obj['parse']['sections']
-        sections = [self.parse_section(section_json) \
-            for section_json in sections_json \
-            if section_json['toclevel'] == 1]
+        sections_info = [section for section in json_obj['parse']['sections'] \
+            if section['toclevel'] == 1] # TODO: does small pages have toc ?
         text = json_obj['parse']['text']['*']
-        self.response.out.write(json.dumps(sections))
+        self.response.out.write(json.dumps(
+            [section for section in self.parse_text(text, sections_info) \
+                 if len(section['paragraphs']) > 0]))
+
 
 def main():
     application = webapp.WSGIApplication(
