@@ -17,6 +17,7 @@
 
 @property (nonatomic, copy) NSString *articleTitle;
 @property (nonatomic, retain) IBOutlet UITableView *sectionView;
+@property (nonatomic, retain) IBOutlet UIActivityIndicatorView *indicatorView;
 @property (nonatomic, retain) NSArray *sections;
 @property (nonatomic, retain) NSMutableData *articleData;
 @property (nonatomic, retain) AVAudioPlayer *audioPlayer;

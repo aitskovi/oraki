@@ -154,6 +154,7 @@
     [self.tableView reloadData];
     self.tableView.userInteractionEnabled = YES;
     [jsonRespose release];
+    self.searchResultData = nil;
 }
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {

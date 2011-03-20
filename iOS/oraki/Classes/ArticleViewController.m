@@ -18,6 +18,7 @@
 
 @synthesize articleTitle = _articleTitle;
 @synthesize sectionView = _sectionView;
+@synthesize indicatorView = _indicatorView;
 @synthesize sections = _sections;
 @synthesize articleData = _articleData;
 @synthesize audioPlayer = _audioPlayer;
@@ -45,6 +46,7 @@
     [_audioPlayer stop];
     [_audioPlayer release], _audioPlayer = nil;
     [_articleTitle release], _articleTitle = nil;
+    [_indicatorView release], _indicatorView = nil;
     [_sectionView release], _sectionView = nil;
     [super dealloc];
 }
@@ -67,6 +69,9 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
+    if (self.articleData) {
+        [self.indicatorView startAnimating];
+    }
 }
 
 - (void)viewDidUnload
@@ -139,10 +144,12 @@
         [sectionObjects addObject:section];
     }];
     
-    self.sections = sectionObjects;
+    [self.indicatorView stopAnimating];
     
+    self.sections = sectionObjects;
     [self.sectionView reloadData];
     [jsonResponse release];
+    self.articleData = nil;
 }
 
 @end
