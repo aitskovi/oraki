@@ -29,7 +29,7 @@
         self.title = _articleTitle;
         
         NSDictionary *parameters = [NSDictionary dictionaryWithObject:_articleTitle forKey:@"title"];
-        NSURL *requestURL = [OrakiConstants urlForRequest:@"article" withParameters:parameters];
+        NSURL *requestURL = [OrakiConstants urlForRequest:@"article_info" withParameters:parameters];
         
         NSURLRequest *request = [[NSURLRequest alloc] initWithURL:requestURL];
         NSURLConnection *searchRequest = [NSURLConnection connectionWithRequest:request delegate:self];
@@ -135,7 +135,9 @@
     NSString *jsonResponse = [[NSString alloc] initWithData:self.articleData encoding:NSUTF8StringEncoding];
     
     SBJsonParser *parser = [[SBJsonParser alloc] init];
-    NSArray *sections = [parser objectWithString:jsonResponse];
+    NSDictionary *response = [parser objectWithString:jsonResponse];
+    
+    NSArray *sections = [response objectForKey:@"sections"];
     NSLog(@"Results are %@", self.sections);
     
     __block NSMutableArray *sectionObjects = [NSMutableArray array];
