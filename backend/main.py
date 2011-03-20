@@ -52,7 +52,7 @@ class SearchHandler(webapp.RequestHandler):
         suggestions = json_obj[1]
         self.response.out.write(json.dumps(suggestions))
 
-class ContentHandler(webapp.RequestHandler):
+class ArticleHandler(webapp.RequestHandler):
     def parse_text(self, text, section_info):
         """return section objects"""
         soup = BS.BeautifulSoup(text)
@@ -107,7 +107,7 @@ class ContentHandler(webapp.RequestHandler):
 def main():
     application = webapp.WSGIApplication(
         [('/search', SearchHandler),
-         ('/content', ContentHandler)],
+         ('/article', ArticleHandler)],
         debug=True)
     util.run_wsgi_app(application)
 
