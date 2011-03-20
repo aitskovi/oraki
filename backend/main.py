@@ -19,6 +19,9 @@ import urllib
 import logging
 import itertools
 from copy import deepcopy
+from operator import itemgetter
+from collections import defaultdict
+
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import util
 from google.appengine.api import urlfetch, memcache
@@ -27,6 +30,13 @@ from django.utils import simplejson as json
 import BeautifulSoup as BS
 
 WIKI_URL = 'http://en.wikipedia.org/w/api.php'
+USE_CACHE = False
+
+def mc_get(*args, **kwargs):
+    return memcache.get(*args, **kwargs) if USE_CACHE else None
+
+def mc_set(*args, **kwargs):
+    return memcache.set(*args, **kwargs) if USE_CACHE else False
 
 def get_json(url, data):
     data_str = urllib.urlencode(data)
@@ -52,7 +62,7 @@ class SearchHandler(webapp.RequestHandler):
             self.error(400)
             return
 
-        search_results = memcache.get(self.mc_key(query))
+        search_results = mc_get(self.mc_key(query))
         if search_results is None:
             try:
                 result = get_json(WIKI_URL,
@@ -71,7 +81,7 @@ class SearchHandler(webapp.RequestHandler):
                 return
             result_obj = json.loads(result.content)
             search_results = result_obj[1]
-            memcache.set(self.mc_key(query), search_results, time=self.MC_TTL)
+            mc_set(self.mc_key(query), search_results, time=self.MC_TTL)
         self.response.out.write(json.dumps(search_results[:limit]))
 
 class ArticleHandler(webapp.RequestHandler):
@@ -87,7 +97,7 @@ class ArticleHandler(webapp.RequestHandler):
         if title is None:
             self.error(400)
             return
-        cached_val = memcache.get(self.mc_key(title))
+        cached_val = mc_get(self.mc_key(title))
         if cached_val is not None:
             self.response.out.write(cached_val)
         else:
@@ -116,7 +126,7 @@ class ArticleHandler(webapp.RequestHandler):
                      'format': 'json',
                      'prop': 'text|sections',
                      'pageid': page_id})
-            except DownloadError:
+            except urlfetch.DownloadError:
                 logging.info('Timed out downloading.')
                 self.error(503)
                 return
@@ -128,22 +138,65 @@ class ArticleHandler(webapp.RequestHandler):
             sections_info = [section for section in page_data['parse']['sections'] \
                 if section['toclevel'] == 1]
             text = page_data['parse']['text']['*']
+            text_soup = BS.BeautifulSoup(text)
+
+            related_titles = self.get_related_titles(text_soup)
+            sections = [section \
+                for section in self.get_sections(text_soup, sections_info) \
+                if len(section['paragraphs']) > 0]
 
             ret_val = json.dumps(
-                [section for section in self.parse_text(text, sections_info) \
-                     if len(section['paragraphs']) > 0])
-            memcache.set(self.mc_key(title), ret_val, time=self.MC_TTL)
+                {'sections': sections,
+                 'related_titles': related_titles})
+
+            mc_set(self.mc_key(title), ret_val, time=self.MC_TTL)
             self.response.out.write(ret_val)
 
-    def parse_text(self, text, section_info):
+    def normalize_title(self, unorm_title):
+        """
+        supposedly, all I need to do is replace the first character with 
+        a capital and all '_' with spaces.
+        see http://www.mediawiki.org/wiki/API:Query#Title_normalization
+        """
+        def transform_char(i, c):
+            if c == '_':
+                c = ' '
+            if i == 0:
+                c = c.upper()
+            return c
+        return ''.join([transform_char(i, c) for (i, c) in enumerate(unorm_title)])
+
+
+    def get_related_titles(self, text_soup):
+        title_counts = defaultdict(int)
+        def is_good_title(title):
+            """
+            false if:
+            * is a Category page or Project page
+            * is a "list of " page
+            """
+            return (not title.startswith('List_of')) and (':' not in title)
+
+        for link in text_soup.findAll('a'):
+            href = link.get('href', '')
+            match = re.search(r'/wiki/(.+?)(#.+)?$', href)
+            # second grouping ignores any anchors
+            if match is not None:
+                title = urllib.unquote_plus(match.group(1))
+                title_counts[title] += 1
+        top_unorm_titles = [title for (title, count) in \
+            sorted(title_counts.items(), key=itemgetter(1), reverse=True)\
+            if is_good_title(title)][:10]
+        return [self.normalize_title(unorm_title) for unorm_title in top_unorm_titles]
+
+    def get_sections(self, text_soup, section_info):
         """
         given the wikipedia text in HTML format and a dictinoary of section data
         returns a list of sectinos (name, paragraphs)
         """
-        soup = BS.BeautifulSoup(text)
         sections = []
         curr_section = {'name': 'Abstract', 'paragraphs': []}
-        for iter_elmn in soup.contents:
+        for iter_elmn in text_soup.contents:
             if isinstance(iter_elmn, BS.NavigableString):
                 # any strings or comments in the top level can be ignored
                 continue
@@ -171,7 +224,7 @@ class ArticleHandler(webapp.RequestHandler):
 def main():
     application = webapp.WSGIApplication(
         [('/search', SearchHandler),
-         ('/article', ArticleHandler)],
+         ('/article_info', ArticleHandler)],
         debug=True)
     util.run_wsgi_app(application)
 
