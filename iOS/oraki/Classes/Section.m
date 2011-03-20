@@ -9,6 +9,8 @@
 #import "Section.h"
 #import "AudioText.h"
 
+static void * kSectionContext = @"com.oraki.Section";
+
 @implementation Section
 
 @synthesize title = _title;
@@ -23,7 +25,7 @@
         NSArray *textForParagraphs = [dictionary objectForKey:@"paragraphs"];
         [textForParagraphs enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
             AudioText *text = [[AudioText alloc] initWithText:obj];
-            
+            [text addObserver:self forKeyPath:@"hasLoaded" options:NSKeyValueObservingOptionNew context:kSectionContext];
             [paragraphs addObject:text];
         }];
         _paragraphs = paragraphs;
@@ -33,6 +35,8 @@
 
 - (void)dealloc {
     [_title release], _title = nil;
+    NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [_paragraphs count])];
+    [_paragraphs removeObserver:self fromObjectsAtIndexes:indexSet forKeyPath:@"hasLoaded"];
     [_paragraphs release], _paragraphs = nil;
     [super dealloc];
 }
@@ -53,6 +57,19 @@
         }
     }
     return YES;
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    if (context == kSectionContext) {
+        if ([keyPath isEqualToString:@"hasLoaded"]){
+            if ([self hasLoaded]) {
+                [self willChangeValueForKey:@"hasLoaded"];
+                [self didChangeValueForKey:@"hasLoaded"];
+            }
+        }
+    } else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    }
 }
 
 @end

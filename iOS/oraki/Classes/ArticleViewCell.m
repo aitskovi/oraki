@@ -48,6 +48,11 @@ static void * kArticleViewContext = @"com.oraki.ArticleView";
     [_section removeObserver:self forKeyPath:@"hasLoaded"];
     [_section release];
     _section = [section retain];
+    if ([_section hasLoaded]) {
+        [self.indicatorView stopAnimating];
+    } else {
+        [self.indicatorView startAnimating];
+    }
     [_section addObserver:self forKeyPath:@"hasLoaded" options: NSKeyValueObservingOptionNew context:kArticleViewContext];
     self.textLabel.text = section.title;
 }
