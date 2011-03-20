@@ -23,6 +23,7 @@
         NSArray *textForParagraphs = [dictionary objectForKey:@"paragraphs"];
         [textForParagraphs enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
             AudioText *text = [[AudioText alloc] initWithText:obj];
+            
             [paragraphs addObject:text];
         }];
         _paragraphs = paragraphs;

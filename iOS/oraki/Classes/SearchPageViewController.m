@@ -34,8 +34,6 @@
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        // j initialization
-        //_results = [[NSArray alloc] initWithObjects:@"Lebron James", @"James", @"Avi", @"Gilbert", nil];
         _tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self  action:@selector(tap)];
         [self.view addGestureRecognizer:_tapRecognizer];
     }
@@ -87,6 +85,7 @@
     [super viewDidLoad];
     self.tableView.hidden = YES;
     self.tapRecognizer.enabled = YES;
+    self.view.backgroundColor = [UIColor grayColor];
 }
 
 - (void)viewDidUnload {

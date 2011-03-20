@@ -10,7 +10,9 @@
 #import "JSON.h"
 #import "Section.h"
 #import "AudioText.h"
+#import "ArticleViewCell.h"
 #import "OrakiConstants.h"
+#import "FliteManager.h"
 
 @implementation ArticleViewController
 
@@ -39,6 +41,7 @@
 }
 
 - (void)dealloc {
+    [[FliteManager sharedInstance] stopAllTasks];
     [_audioPlayer stop];
     [_audioPlayer release], _audioPlayer = nil;
     [_articleTitle release], _articleTitle = nil;
@@ -84,25 +87,18 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"article"];
+    ArticleViewCell *cell = (ArticleViewCell *)[tableView dequeueReusableCellWithIdentifier:@"article"];
     if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"article"] autorelease];
+        cell = [[[ArticleViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"article"] autorelease];
     }
     
-    if (!self.sections) {
-        cell.textLabel.text = @"Loading ...";
-    } else {
-        cell.textLabel.text = [[self.sections objectAtIndex:indexPath.row] title];
-    }
+    Section *section = [self.sections objectAtIndex:indexPath.row];
+    cell.section = section;
     return cell;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    NSUInteger resultSize = [self.sections count];
-    if (resultSize == 0) {
-        return 1;
-    }
-    return resultSize;
+    return [self.sections count];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {

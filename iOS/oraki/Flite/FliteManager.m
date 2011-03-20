@@ -124,7 +124,7 @@ cst_voice *voice;
 }
 
 - (void)nextBlock:(BOOL)transition {
-    if (transition) [self.queue removeObjectAtIndex:0];
+    if (transition && [self.queue count] > 0) [self.queue removeObjectAtIndex:0];
     
     if ([self.queue count] > 0) {
         __block FliteManager *_self = self;

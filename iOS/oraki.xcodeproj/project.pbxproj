@@ -19,6 +19,9 @@
 		8209777F133589CC008C44E5 /* Section.m in Sources */ = {isa = PBXBuildFile; fileRef = 8209777E133589CA008C44E5 /* Section.m */; };
 		8209778313358BF0008C44E5 /* AudioText.m in Sources */ = {isa = PBXBuildFile; fileRef = 8209778213358BF0008C44E5 /* AudioText.m */; };
 		820977861335D5A7008C44E5 /* AudioPlayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 820977851335D593008C44E5 /* AudioPlayerView.m */; };
+		8209778D13368F37008C44E5 /* ArticleViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8209778C13368F36008C44E5 /* ArticleViewCell.m */; };
+		820977911336951B008C44E5 /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 8209778F1336951B008C44E5 /* logo.png */; };
+		820977921336951B008C44E5 /* logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 820977901336951B008C44E5 /* logo@2x.png */; };
 		822389F21335540F0053DFE4 /* SearchPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 822389F01335540F0053DFE4 /* SearchPageViewController.m */; };
 		822389F31335540F0053DFE4 /* SearchPageViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 822389F11335540F0053DFE4 /* SearchPageViewController.xib */; };
 		82238AA313355D330053DFE4 /* au_none.c in Sources */ = {isa = PBXBuildFile; fileRef = 82238A1F13355D330053DFE4 /* au_none.c */; };
@@ -167,6 +170,10 @@
 		8209778213358BF0008C44E5 /* AudioText.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AudioText.m; path = Classes/AudioText.m; sourceTree = "<group>"; };
 		820977841335D58C008C44E5 /* AudioPlayerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AudioPlayerView.h; path = Classes/AudioPlayerView.h; sourceTree = "<group>"; };
 		820977851335D593008C44E5 /* AudioPlayerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AudioPlayerView.m; path = Classes/AudioPlayerView.m; sourceTree = "<group>"; };
+		8209778B13368F36008C44E5 /* ArticleViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ArticleViewCell.h; path = Classes/ArticleViewCell.h; sourceTree = "<group>"; };
+		8209778C13368F36008C44E5 /* ArticleViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ArticleViewCell.m; path = Classes/ArticleViewCell.m; sourceTree = "<group>"; };
+		8209778F1336951B008C44E5 /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo.png; sourceTree = "<group>"; };
+		820977901336951B008C44E5 /* logo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "logo@2x.png"; sourceTree = "<group>"; };
 		822389EF1335540F0053DFE4 /* SearchPageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SearchPageViewController.h; path = Classes/SearchPageViewController.h; sourceTree = "<group>"; };
 		822389F01335540F0053DFE4 /* SearchPageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SearchPageViewController.m; path = Classes/SearchPageViewController.m; sourceTree = "<group>"; };
 		822389F11335540F0053DFE4 /* SearchPageViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = SearchPageViewController.xib; path = Classes/SearchPageViewController.xib; sourceTree = "<group>"; };
@@ -418,6 +425,8 @@
 				820977841335D58C008C44E5 /* AudioPlayerView.h */,
 				820977851335D593008C44E5 /* AudioPlayerView.m */,
 				820977781335831D008C44E5 /* ArticleViewController.h */,
+				8209778B13368F36008C44E5 /* ArticleViewCell.h */,
+				8209778C13368F36008C44E5 /* ArticleViewCell.m */,
 				820977791335831E008C44E5 /* ArticleViewController.m */,
 				8209777A1335831E008C44E5 /* ArticleViewController.xib */,
 				822389F11335540F0053DFE4 /* SearchPageViewController.xib */,
@@ -741,6 +750,8 @@
 		822F24FE13355242003F295E /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				8209778F1336951B008C44E5 /* logo.png */,
+				820977901336951B008C44E5 /* logo@2x.png */,
 				822F24FF13355242003F295E /* oraki-Info.plist */,
 				822F250013355242003F295E /* InfoPlist.strings */,
 				822F250313355242003F295E /* oraki-Prefix.pch */,
@@ -841,6 +852,8 @@
 				822389F31335540F0053DFE4 /* SearchPageViewController.xib in Resources */,
 				82238AFF13355D330053DFE4 /* us_pos.tree in Resources */,
 				8209777C1335831F008C44E5 /* ArticleViewController.xib in Resources */,
+				820977911336951B008C44E5 /* logo.png in Resources */,
+				820977921336951B008C44E5 /* logo@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -985,6 +998,7 @@
 				8209777F133589CC008C44E5 /* Section.m in Sources */,
 				8209778313358BF0008C44E5 /* AudioText.m in Sources */,
 				820977861335D5A7008C44E5 /* AudioPlayerView.m in Sources */,
+				8209778D13368F37008C44E5 /* ArticleViewCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
